@@ -1,4 +1,4 @@
-FROM wordpress:latest
+FROM wordpress:6.7.2-php8.1-apache
 
 # Install LDAP PHP extension
 RUN apt-get update && apt-get install -y \

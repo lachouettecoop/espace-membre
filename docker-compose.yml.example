@@ -1,0 +1,50 @@
+services:
+  data:
+    image: tianon/true
+    volumes:
+      - ./data/wordpress:/var/www/html
+      - ./data/mysql:/var/lib/mysql
+
+  devwordpress:
+    build: .
+    depends_on:
+      - devwordpress_db
+    ports:
+      - 8080:80
+    environment:
+      - WORDPRESS_DB_HOST=devwordpress_db
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DB_USER=wp_user
+      - WORDPRESS_DB_PASSWORD=
+      - VIRTUAL_HOST=
+    volumes_from:
+      - data
+    networks:
+      - devespace_membre
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_web"
+      traefik.http.routers.devwordpress.entrypoints: "web,websecure"
+      traefik.http.routers.devwordpress.rule: "Host(`devespace-membre.lachouettecoop.fr`)"
+      traefik.http.routers.devwordpress.tls: "true"
+      traefik.http.routers.devwordpress.tls.certresolver: "myresolver"
+      traefik.http.services.devwordpress.loadbalancer.server.port: "80"
+
+  devwordpress_db:
+    image: mariadb:10.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wp_user
+      - MYSQL_PASSWORD=
+    volumes_from:
+      - data
+    networks:
+      - devespace_membre
+
+networks:
+  devespace_membre:
+    driver: bridge
+  traefik_web:
+    external: true
+
