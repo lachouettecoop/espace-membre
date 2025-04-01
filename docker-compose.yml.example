@@ -16,11 +16,11 @@ services:
       - WORDPRESS_DB_NAME=wordpress
       - WORDPRESS_DB_USER=wp_user
       - WORDPRESS_DB_PASSWORD=
-      - VIRTUAL_HOST=
     volumes_from:
       - data
     networks:
       - devespace_membre
+      - traefik_web
     labels:
       traefik.enable: "true"
       traefik.docker.network: "traefik_web"
